@@ -5,6 +5,12 @@ const config = {
     fontFamily: {
       sans: ["var(--font-josefin)", "sans-serif"],
     },
+    backgroundImage: {
+      "mobile-header": "url(/images/bg-mobile-light.jpg)",
+      "desktop-header": "url(/images/bg-desktop-light.jpg)",
+      "dark-mobile-header": "url(/images/bg-mobile-dark.jpg)",
+      "dark-desktop-header": "url(/images/bg-desktop-light.jpg)",
+    },
     colors: {
       primary: {
         100: "hsl(220, 98%, 61%)",
@@ -27,6 +33,8 @@ const config = {
         600: "hsl(233, 14%, 35%)",
         700: "hsl(237, 14%, 26%)",
       },
+      white: "#fff",
+      black: "#000",
     },
     extend: {},
   },
