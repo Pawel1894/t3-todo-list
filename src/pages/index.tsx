@@ -2,9 +2,18 @@ import SignInCard from "~/components/SignInCard";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
   const { data: sessionData } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (sessionData?.user) {
+      void router.push("/tasks");
+    }
+  }, [sessionData?.user, router]);
 
   return (
     <>
@@ -15,11 +24,7 @@ const Home: NextPage = () => {
       </Head>
 
       <div className="relative z-10 mx-auto max-w-xl">
-        {sessionData?.user ? (
-          <span>Logged in {sessionData.user.name}</span>
-        ) : (
-          <SignInCard />
-        )}
+        {!sessionData ? <SignInCard /> : null}
       </div>
     </>
   );
