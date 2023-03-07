@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 const config = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
+  darkMode: "class",
   theme: {
     fontFamily: {
       sans: ["var(--font-josefin)", "sans-serif"],
@@ -9,7 +10,7 @@ const config = {
       "mobile-header": "url(/images/bg-mobile-light.jpg)",
       "desktop-header": "url(/images/bg-desktop-light.jpg)",
       "dark-mobile-header": "url(/images/bg-mobile-dark.jpg)",
-      "dark-desktop-header": "url(/images/bg-desktop-light.jpg)",
+      "dark-desktop-header": "url(/images/bg-desktop-dark.jpg)",
     },
     colors: {
       primary: {

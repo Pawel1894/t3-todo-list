@@ -3,7 +3,7 @@ import SignIn from "./SignIn";
 
 export default function SignInCard() {
   return (
-    <div className="mx-auto w-11/12 -translate-y-16 rounded-md bg-white py-6  px-5 shadow-lg sm:-translate-y-28">
+    <div className="mx-auto w-11/12 -translate-y-16 rounded-md bg-white py-6 px-5  shadow-lg dark:bg-dark-200 dark:text-white sm:-translate-y-28">
       <p className="mb-6 text-center text-lg">
         Welcome to todo list app made on top of t3-stack
       </p>

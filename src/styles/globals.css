@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    overflow-x: hidden;
+  }
+
+  body.dark {
+    @apply bg-dark-100;
+  }
+}
