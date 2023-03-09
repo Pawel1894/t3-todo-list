@@ -17,7 +17,10 @@ const Home: NextPage = () => {
     );
   }
 
-  if (status === "authenticated") void router.push("/tasks");
+  if (status === "authenticated") {
+    void router.push("/task");
+    return null;
+  }
 
   return (
     <>
