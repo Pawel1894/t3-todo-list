@@ -11,7 +11,11 @@ export default function Task() {
   const { data: sessionData, status: sessionStatus } = useSession();
 
   // TODO: change to ssg
-  const { data, isLoading } = api.task.getAll.useQuery(undefined, {
+  const {
+    data,
+    isLoading,
+    refetch: refetchTasks,
+  } = api.task.getAll.useQuery(undefined, {
     enabled: sessionData?.user !== undefined,
   });
 
@@ -31,7 +35,11 @@ export default function Task() {
   return (
     <div className="mx-auto max-w-xl -translate-y-[5.75rem] px-6 sm:px-0">
       <TaskInput />
-      {isLoading ? <LoadIndicator /> : <TasksCard tasks={data} />}
+      {isLoading ? (
+        <LoadIndicator />
+      ) : (
+        <TasksCard refetchTasks={refetchTasks} tasks={data} />
+      )}
     </div>
   );
 }

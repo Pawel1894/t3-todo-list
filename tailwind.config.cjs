@@ -6,12 +6,6 @@ const config = {
     fontFamily: {
       sans: ["var(--font-josefin)", "sans-serif"],
     },
-    backgroundImage: {
-      "mobile-header": "url(/images/bg-mobile-light.jpg)",
-      "desktop-header": "url(/images/bg-desktop-light.jpg)",
-      "dark-mobile-header": "url(/images/bg-mobile-dark.jpg)",
-      "dark-desktop-header": "url(/images/bg-desktop-dark.jpg)",
-    },
     colors: {
       primary: {
         100: "hsl(220, 98%, 61%)",
@@ -37,7 +31,14 @@ const config = {
       white: "#fff",
       black: "#000",
     },
-    extend: {},
+    extend: {
+      backgroundImage: {
+        "mobile-header": "url(/images/bg-mobile-light.jpg)",
+        "desktop-header": "url(/images/bg-desktop-light.jpg)",
+        "dark-mobile-header": "url(/images/bg-mobile-dark.jpg)",
+        "dark-desktop-header": "url(/images/bg-desktop-dark.jpg)",
+      },
+    },
   },
   plugins: [],
 };

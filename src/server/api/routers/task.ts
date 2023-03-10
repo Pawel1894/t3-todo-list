@@ -26,4 +26,22 @@ export const taskRouter = createTRPCRouter({
         },
       });
     }),
+  updateCompleted: protectedProcedure
+    .input(
+      z.object({
+        value: z.boolean(),
+        id: z.string(),
+        pos: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.task.update({
+        where: {
+          id_position: { id: input.id, position: input.pos },
+        },
+        data: {
+          isCompleted: input.value,
+        },
+      });
+    }),
 });
