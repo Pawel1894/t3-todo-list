@@ -11,3 +11,9 @@
     @apply bg-dark-100;
   }
 }
+
+@layer utilities {
+  .default-gradient {
+    background: linear-gradient(135deg, #55ddff 0%, #c058f3 100%);
+  }
+}

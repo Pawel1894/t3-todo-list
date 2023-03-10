@@ -21,11 +21,11 @@ export default function TaskInput() {
         placeholder="Create a new todo..."
       />
       <button
-        className="bg- rounded-r-md bg-light-200 px-5 focus:bg-white active:bg-white dark:bg-dark-100 dark:text-white dark:focus:bg-dark-100 dark:active:bg-dark-100"
+        className="default-gradient rounded-r-md px-5 dark:bg-dark-100 dark:text-white"
         onClick={createTask}
       >
         <svg
-          className="fill-dark-200 dark:fill-white "
+          className="fill-light-100"
           version="1.1"
           id="Capa_1"
           width="20px"
