@@ -9,17 +9,30 @@ type Props = {
 };
 
 export default function Task({ task, refetchTasks }: Props) {
-  const taskMutation = api.task.updateCompleted.useMutation({
+  const markAsCompleted = api.task.updateCompleted.useMutation({
+    onSuccess: () => {
+      refetchTasks();
+    },
+  });
+
+  const deleteTask = api.task.delete.useMutation({
     onSuccess: () => {
       refetchTasks();
     },
   });
 
   function toggleCompleted() {
-    taskMutation.mutate({
+    markAsCompleted.mutate({
       id: task.id,
       pos: task.position,
       value: !task.isCompleted,
+    });
+  }
+
+  function onDeleteHandler() {
+    deleteTask.mutate({
+      id: task.id,
+      pos: task.position,
     });
   }
 
@@ -47,7 +60,7 @@ export default function Task({ task, refetchTasks }: Props) {
       >
         {task.text}
       </span>
-      <button className="ml-auto">
+      <button className="ml-auto" onClick={onDeleteHandler}>
         <Image
           src={"/images/icon-cross.svg"}
           alt="delete task"
