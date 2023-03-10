@@ -34,7 +34,7 @@ export const taskRouter = createTRPCRouter({
         pos: z.number(),
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(({ ctx, input }) => {
       return ctx.prisma.task.update({
         where: {
           id_position: { id: input.id, position: input.pos },
@@ -51,11 +51,21 @@ export const taskRouter = createTRPCRouter({
         pos: z.number(),
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(({ ctx, input }) => {
       return ctx.prisma.task.delete({
         where: {
           id_position: { id: input.id, position: input.pos },
         },
       });
     }),
+  deleteCompleted: protectedProcedure.mutation(({ ctx }) => {
+    return ctx.prisma.task.deleteMany({
+      where: {
+        userId: ctx.session.user.id,
+        AND: {
+          isCompleted: true,
+        },
+      },
+    });
+  }),
 });

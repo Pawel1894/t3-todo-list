@@ -21,7 +21,7 @@ export default function TasksCard({ tasks, refetchTasks }: Props) {
             />
           ))}
           <TaskSummary
-            count={tasks.filter((task) => task.isCompleted).length}
+            count={tasks.filter((task) => !task.isCompleted).length}
             refetchTasks={refetchTasks}
           />
         </>
