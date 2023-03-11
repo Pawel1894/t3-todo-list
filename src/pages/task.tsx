@@ -1,13 +1,14 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { Droppable } from "react-beautiful-dnd";
 import FilterBtn from "~/components/FilterBtn";
 import LoadIndicator from "~/components/LoadIndicator";
 import TaskInput from "~/components/TaskInput";
-import TasksCard from "~/components/TasksCard";
 import TaskSummary from "~/components/TaskSummary";
 import { FiltersEnum } from "~/types/enums";
 import { api } from "~/utils/api";
+import TaskDisplay from "~/components/Task";
 
 export default function Task() {
   const router = useRouter();
@@ -40,11 +41,34 @@ export default function Task() {
   return (
     <div className="mx-auto max-w-xl -translate-y-[5.75rem] px-6 sm:px-0">
       <TaskInput refetchTasks={refetchTasks} />
-      <TasksCard
-        isLoading={isLoading}
-        refetchTasks={refetchTasks}
-        tasks={data}
-      />
+      <Droppable droppableId={"tasks"}>
+        {(provided) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            id="viewport"
+            className="relative mt-4 h-[45vh] overflow-y-auto overflow-x-hidden rounded-t-md bg-white shadow-lg"
+          >
+            {isLoading ? (
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <LoadIndicator />
+              </div>
+            ) : data ? (
+              data.map((task, index) => (
+                <TaskDisplay
+                  refetchTasks={refetchTasks}
+                  key={task.id}
+                  task={task}
+                  index={index}
+                />
+              ))
+            ) : (
+              <span>Add your first task!</span>
+            )}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
       <div>
         <TaskSummary
           count={
