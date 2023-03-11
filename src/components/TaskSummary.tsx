@@ -5,7 +5,7 @@ import { api } from "~/utils/api";
 
 type Props = {
   refetchTasks: () => Promise<QueryObserverResult<Task[]>>;
-  count: number;
+  count: number | string;
 };
 
 export default function TaskSummary({ refetchTasks, count }: Props) {
@@ -15,7 +15,7 @@ export default function TaskSummary({ refetchTasks, count }: Props) {
     },
   });
   return (
-    <div className="flex items-center justify-between px-5 py-4">
+    <div className="flex items-center justify-between rounded-b-md bg-white px-5 py-4 shadow-lg">
       <span className="text-sm text-light-400">{count} items left</span>
       <button
         className="text-sm text-light-400"

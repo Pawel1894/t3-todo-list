@@ -38,14 +38,16 @@ export default function Task({ task, refetchTasks }: Props) {
   }
 
   return (
-    <div className="flex items-center gap-x-3 border-b border-light-200 px-5 py-4">
+    <div
+      className="flex items-center gap-x-3 border-b border-light-200 px-5 py-4"
+      onClick={toggleCompleted}
+    >
       <button
         className={`relative flex h-5 w-5 items-center justify-center rounded-full  ${
           task.isCompleted
             ? "bg-gradient-to-b from-primary-200 to-primary-300"
             : "border border-light-200"
         }`}
-        onClick={toggleCompleted}
       >
         <Image
           src={"/images/icon-check.svg"}

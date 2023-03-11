@@ -5,6 +5,7 @@ import FilterBtn from "~/components/FilterBtn";
 import LoadIndicator from "~/components/LoadIndicator";
 import TaskInput from "~/components/TaskInput";
 import TasksCard from "~/components/TasksCard";
+import TaskSummary from "~/components/TaskSummary";
 import { FiltersEnum } from "~/types/enums";
 import { api } from "~/utils/api";
 
@@ -15,11 +16,10 @@ export default function Task() {
     FiltersEnum.Enum.All
   );
 
-  // TODO: change to ssg
+  // TODO: change to ssr?
   const {
     data,
     isLoading,
-    isRefetching,
     refetch: refetchTasks,
   } = api.task.getTasks.useQuery(activeFilter, {
     enabled: sessionData?.user !== undefined,
@@ -45,28 +45,39 @@ export default function Task() {
         refetchTasks={refetchTasks}
         tasks={data}
       />
-      <div className="mt-4 flex items-center justify-center gap-x-5 rounded-md bg-white py-4 font-bold text-light-400 shadow-md">
-        <FilterBtn
-          key={FiltersEnum.Enum.All}
-          activeFilter={activeFilter}
-          setActiveFilter={setActiveFilter}
-          label={"All"}
-          type={FiltersEnum.Enum.All}
+      <div>
+        <TaskSummary
+          count={
+            data ? data.filter((task) => !task.isCompleted).length : "unknown"
+          }
+          refetchTasks={refetchTasks}
         />
-        <FilterBtn
-          key={FiltersEnum.Enum.Active}
-          activeFilter={activeFilter}
-          setActiveFilter={setActiveFilter}
-          label={"Active"}
-          type={FiltersEnum.Enum.Active}
-        />
-        <FilterBtn
-          key={FiltersEnum.Enum.Completed}
-          activeFilter={activeFilter}
-          setActiveFilter={setActiveFilter}
-          label={"Completed"}
-          type={FiltersEnum.Enum.Completed}
-        />
+        <div className="mt-4 flex items-center justify-center gap-x-5 rounded-md bg-white py-4 font-bold text-light-400 shadow-md">
+          <FilterBtn
+            key={FiltersEnum.Enum.All}
+            activeFilter={activeFilter}
+            setActiveFilter={setActiveFilter}
+            label={"All"}
+            type={FiltersEnum.Enum.All}
+          />
+          <FilterBtn
+            key={FiltersEnum.Enum.Active}
+            activeFilter={activeFilter}
+            setActiveFilter={setActiveFilter}
+            label={"Active"}
+            type={FiltersEnum.Enum.Active}
+          />
+          <FilterBtn
+            key={FiltersEnum.Enum.Completed}
+            activeFilter={activeFilter}
+            setActiveFilter={setActiveFilter}
+            label={"Completed"}
+            type={FiltersEnum.Enum.Completed}
+          />
+        </div>
+        <p className="mt-10 text-center text-light-400">
+          Drag and drop to reorder list
+        </p>
       </div>
     </div>
   );
