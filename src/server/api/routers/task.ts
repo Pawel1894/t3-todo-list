@@ -1,11 +1,18 @@
 import { createTRPCRouter, protectedProcedure } from "./../trpc";
 import { z } from "zod";
+import { FiltersEnum } from "~/types/enums";
 
 export const taskRouter = createTRPCRouter({
-  getAll: protectedProcedure.query(({ ctx }) => {
+  getTasks: protectedProcedure.input(FiltersEnum).query(({ ctx, input }) => {
     return ctx.prisma.task.findMany({
       where: {
         userId: ctx.session.user.id,
+        AND:
+          input === "All"
+            ? {}
+            : {
+                isCompleted: input === "Active" ? false : true,
+              },
       },
     });
   }),

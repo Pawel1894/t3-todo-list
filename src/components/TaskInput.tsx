@@ -1,9 +1,19 @@
+import { type Task } from "@prisma/client";
+import { type QueryObserverResult } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
 
-export default function TaskInput() {
-  const [task, setTask] = useState<string | undefined>();
-  const taskMutation = api.task.create.useMutation();
+export default function TaskInput({
+  refetchTasks,
+}: {
+  refetchTasks: () => Promise<QueryObserverResult<Task[]>>;
+}) {
+  const [task, setTask] = useState<string>("");
+  const taskMutation = api.task.create.useMutation({
+    onSuccess: async () => {
+      await refetchTasks();
+    },
+  });
 
   function createTask() {
     if (task) taskMutation.mutate(task);

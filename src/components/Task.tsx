@@ -1,23 +1,24 @@
 import { type Task } from "@prisma/client";
+import { type QueryObserverResult } from "@tanstack/react-query";
 import Image from "next/image";
 import React from "react";
 import { api } from "~/utils/api";
 
 type Props = {
   task: Task;
-  refetchTasks: () => void;
+  refetchTasks: () => Promise<QueryObserverResult<Task[]>>;
 };
 
 export default function Task({ task, refetchTasks }: Props) {
   const markAsCompleted = api.task.updateCompleted.useMutation({
-    onSuccess: () => {
-      refetchTasks();
+    onSuccess: async () => {
+      await refetchTasks();
     },
   });
 
   const deleteTask = api.task.delete.useMutation({
-    onSuccess: () => {
-      refetchTasks();
+    onSuccess: async () => {
+      await refetchTasks();
     },
   });
 

@@ -1,15 +1,17 @@
+import { type Task } from "@prisma/client";
+import { type QueryObserverResult } from "@tanstack/react-query";
 import React from "react";
 import { api } from "~/utils/api";
 
 type Props = {
-  refetchTasks: () => void;
+  refetchTasks: () => Promise<QueryObserverResult<Task[]>>;
   count: number;
 };
 
 export default function TaskSummary({ refetchTasks, count }: Props) {
   const deleteCompleted = api.task.deleteCompleted.useMutation({
-    onSuccess: () => {
-      refetchTasks();
+    onSuccess: async () => {
+      await refetchTasks();
     },
   });
   return (

@@ -1,17 +1,23 @@
 import { type Task } from "@prisma/client";
+import { type QueryObserverResult } from "@tanstack/react-query";
 import React from "react";
 import TaskDisplay from "~/components/Task";
+import LoadIndicator from "./LoadIndicator";
 import TaskSummary from "./TaskSummary";
 
 type Props = {
   tasks: Task[] | undefined;
-  refetchTasks: () => void;
+  refetchTasks: () => Promise<QueryObserverResult<Task[]>>;
+  isLoading: boolean;
 };
 
-export default function TasksCard({ tasks, refetchTasks }: Props) {
+export default function TasksCard({ tasks, refetchTasks, isLoading }: Props) {
   return (
-    <div className="mt-4 rounded-md bg-white  shadow-md">
-      {tasks ? (
+    <div className="mt-4 rounded-md bg-white  shadow-lg">
+      {/* TODO: center loading */}
+      {isLoading ? (
+        <LoadIndicator />
+      ) : tasks ? (
         <>
           {tasks.map((task) => (
             <TaskDisplay
