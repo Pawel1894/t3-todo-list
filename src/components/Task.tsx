@@ -11,7 +11,7 @@ type Props = {
   index: number;
 };
 
-export default function Task({ task, refetchTasks, index }: Props) {
+export default function Task({ task, refetchTasks }: Props) {
   const markAsCompleted = api.task.updateCompleted.useMutation({
     onSuccess: async () => {
       await refetchTasks();
@@ -40,13 +40,13 @@ export default function Task({ task, refetchTasks, index }: Props) {
   }
 
   return (
-    <Draggable draggableId={task.id} index={index}>
+    <Draggable draggableId={task.id} index={task.position}>
       {(provided) => (
         <div
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          className="!static !left-0 !top-0 flex items-center gap-x-3 border-b border-light-200 px-5 py-4"
+          className="!left-auto !top-auto flex items-center gap-x-3 border-b border-light-200 px-5 py-4"
           onClick={toggleCompleted}
         >
           <button

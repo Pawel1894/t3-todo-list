@@ -64,7 +64,12 @@ export const taskRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       // for react-beautiful-dnd
-      await decrementPositions(ctx.prisma, ctx.session.user.id, input.pos);
+      await decrementPositions(
+        ctx.prisma,
+        ctx.session.user.id,
+        input.pos,
+        input.id
+      );
 
       return ctx.prisma.task.delete({
         where: {
@@ -86,7 +91,12 @@ export const taskRouter = createTRPCRouter({
     });
     // for react-beautiful-dnd
     for await (const task of tasks) {
-      await decrementPositions(ctx.prisma, ctx.session.user.id, task.position);
+      await decrementPositions(
+        ctx.prisma,
+        ctx.session.user.id,
+        task.position,
+        task.id
+      );
     }
 
     return ctx.prisma.task.deleteMany({
@@ -98,12 +108,77 @@ export const taskRouter = createTRPCRouter({
       },
     });
   }),
+  switchPositions: protectedProcedure
+    .input(
+      z.object({
+        sourcePos: z.number(),
+        sourceId: z.string(),
+        destPos: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (input.sourcePos < input.destPos) {
+        await ctx.prisma.task.updateMany({
+          where: {
+            position: {
+              lte: input.destPos,
+              gt: input.sourcePos,
+            },
+            AND: {
+              id: {
+                not: input.sourceId,
+              },
+              AND: {
+                userId: ctx.session.user.id,
+              },
+            },
+          },
+          data: {
+            position: {
+              decrement: 1,
+            },
+          },
+        });
+      } else {
+        await ctx.prisma.task.updateMany({
+          where: {
+            position: {
+              gte: input.destPos,
+              lt: input.sourcePos,
+            },
+            AND: {
+              id: {
+                not: input.sourceId,
+              },
+              AND: {
+                userId: ctx.session.user.id,
+              },
+            },
+          },
+          data: {
+            position: {
+              increment: 1,
+            },
+          },
+        });
+      }
+
+      return ctx.prisma.task.update({
+        where: {
+          id_position: { id: input.sourceId, position: input.sourcePos },
+        },
+        data: {
+          position: input.destPos,
+        },
+      });
+    }),
 });
 
 async function decrementPositions(
   prisma: PrismaClient,
   userId: string,
-  position: number
+  position: number,
+  id: string
 ) {
   await prisma.task.updateMany({
     where: {
@@ -111,6 +186,11 @@ async function decrementPositions(
       AND: {
         position: {
           gte: position,
+        },
+        AND: {
+          id: {
+            not: id,
+          },
         },
       },
     },
