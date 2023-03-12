@@ -1,6 +1,5 @@
 import { type Task } from "@prisma/client";
 import { type QueryObserverResult } from "@tanstack/react-query";
-import Image from "next/image";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { api } from "~/utils/api";
