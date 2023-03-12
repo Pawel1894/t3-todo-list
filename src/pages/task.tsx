@@ -14,6 +14,7 @@ import { FiltersEnum } from "~/types/enums";
 import { api } from "~/utils/api";
 import TaskDisplay from "~/components/Task";
 import { useQueryClient } from "@tanstack/react-query";
+import Head from "next/head";
 
 export default function Task() {
   const router = useRouter();
@@ -110,72 +111,81 @@ export default function Task() {
   }
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <div className="mx-auto max-w-xl -translate-y-[5.75rem] px-6 sm:px-0">
-        <TaskInput refetchTasks={refetchTasks} />
-        <Droppable droppableId={"tasks"}>
-          {(provided) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              id="viewport"
-              className="relative mt-4 h-[45vh] overflow-y-auto overflow-x-hidden rounded-t-md bg-white drop-shadow-lg dark:bg-dark-200 dark:text-white"
-            >
-              {isLoading ? (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                  <LoadIndicator />
-                </div>
-              ) : data ? (
-                data.map((task, index) => (
-                  <TaskDisplay
-                    refetchTasks={refetchTasks}
-                    key={task.id}
-                    task={task}
-                    index={index}
-                  />
-                ))
-              ) : (
-                <span>Add your first task!</span>
-              )}
-              {provided.placeholder}
+    <>
+      <Head>
+        <title>T3 todo list</title>
+        <meta name="description" content="Created using t3 stack" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className="mx-auto max-w-xl -translate-y-[5.75rem] px-6 sm:px-0">
+          <TaskInput refetchTasks={refetchTasks} />
+          <Droppable droppableId={"tasks"}>
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                id="viewport"
+                className="relative mt-4 h-[45vh] overflow-y-auto overflow-x-hidden rounded-t-md bg-white drop-shadow-lg dark:bg-dark-200 dark:text-white"
+              >
+                {isLoading ? (
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <LoadIndicator />
+                  </div>
+                ) : data ? (
+                  data.map((task, index) => (
+                    <TaskDisplay
+                      refetchTasks={refetchTasks}
+                      key={task.id}
+                      task={task}
+                      index={index}
+                    />
+                  ))
+                ) : (
+                  <span>Add your first task!</span>
+                )}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+          <div className="relative z-10">
+            <TaskSummary
+              count={
+                data
+                  ? data.filter((task) => !task.isCompleted).length
+                  : "unknown"
+              }
+              refetchTasks={refetchTasks}
+            />
+            <div className="left-1/2 mt-4 flex items-center justify-center gap-x-5 rounded-md bg-white py-4 font-bold text-light-400 shadow-md dark:bg-dark-200 md:absolute md:top-1/2 md:m-0 md:-translate-y-1/2 md:-translate-x-1/2 md:bg-transparent md:p-0 md:shadow-none md:dark:bg-transparent">
+              <FilterBtn
+                key={FiltersEnum.Enum.All}
+                activeFilter={activeFilter}
+                setActiveFilter={setActiveFilter}
+                label={"All"}
+                type={FiltersEnum.Enum.All}
+              />
+              <FilterBtn
+                key={FiltersEnum.Enum.Active}
+                activeFilter={activeFilter}
+                setActiveFilter={setActiveFilter}
+                label={"Active"}
+                type={FiltersEnum.Enum.Active}
+              />
+              <FilterBtn
+                key={FiltersEnum.Enum.Completed}
+                activeFilter={activeFilter}
+                setActiveFilter={setActiveFilter}
+                label={"Completed"}
+                type={FiltersEnum.Enum.Completed}
+              />
             </div>
-          )}
-        </Droppable>
-        <div className="relative z-10">
-          <TaskSummary
-            count={
-              data ? data.filter((task) => !task.isCompleted).length : "unknown"
-            }
-            refetchTasks={refetchTasks}
-          />
-          <div className="left-1/2 mt-4 flex items-center justify-center gap-x-5 rounded-md bg-white py-4 font-bold text-light-400 shadow-md dark:bg-dark-200 md:absolute md:top-1/2 md:m-0 md:-translate-y-1/2 md:-translate-x-1/2 md:bg-transparent md:p-0 md:shadow-none md:dark:bg-transparent">
-            <FilterBtn
-              key={FiltersEnum.Enum.All}
-              activeFilter={activeFilter}
-              setActiveFilter={setActiveFilter}
-              label={"All"}
-              type={FiltersEnum.Enum.All}
-            />
-            <FilterBtn
-              key={FiltersEnum.Enum.Active}
-              activeFilter={activeFilter}
-              setActiveFilter={setActiveFilter}
-              label={"Active"}
-              type={FiltersEnum.Enum.Active}
-            />
-            <FilterBtn
-              key={FiltersEnum.Enum.Completed}
-              activeFilter={activeFilter}
-              setActiveFilter={setActiveFilter}
-              label={"Completed"}
-              type={FiltersEnum.Enum.Completed}
-            />
           </div>
+          <p className="mt-10 text-center text-light-400">
+            Drag and drop to reorder list
+          </p>
         </div>
-        <p className="mt-10 text-center text-light-400">
-          Drag and drop to reorder list
-        </p>
-      </div>
-    </DragDropContext>
+      </DragDropContext>
+    </>
   );
 }
