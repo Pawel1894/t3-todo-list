@@ -89,7 +89,6 @@ export default function Task() {
     });
   }
 
-  // TODO: change to ssr?
   const {
     data,
     isLoading,
@@ -120,7 +119,7 @@ export default function Task() {
               ref={provided.innerRef}
               {...provided.droppableProps}
               id="viewport"
-              className="relative mt-4 h-[45vh] overflow-y-auto overflow-x-hidden rounded-t-md bg-white drop-shadow-lg"
+              className="relative mt-4 h-[45vh] overflow-y-auto overflow-x-hidden rounded-t-md bg-white drop-shadow-lg dark:bg-dark-200 dark:text-white"
             >
               {isLoading ? (
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -142,14 +141,14 @@ export default function Task() {
             </div>
           )}
         </Droppable>
-        <div className="sticky z-10">
+        <div className="relative z-10">
           <TaskSummary
             count={
               data ? data.filter((task) => !task.isCompleted).length : "unknown"
             }
             refetchTasks={refetchTasks}
           />
-          <div className="mt-4 flex items-center justify-center gap-x-5 rounded-md bg-white py-4 font-bold text-light-400 shadow-md">
+          <div className="left-1/2 mt-4 flex items-center justify-center gap-x-5 rounded-md bg-white py-4 font-bold text-light-400 shadow-md dark:bg-dark-200 md:absolute md:top-1/2 md:m-0 md:-translate-y-1/2 md:-translate-x-1/2 md:bg-transparent md:p-0 md:shadow-none md:dark:bg-transparent">
             <FilterBtn
               key={FiltersEnum.Enum.All}
               activeFilter={activeFilter}
@@ -172,10 +171,10 @@ export default function Task() {
               type={FiltersEnum.Enum.Completed}
             />
           </div>
-          <p className="mt-10 text-center text-light-400">
-            Drag and drop to reorder list
-          </p>
         </div>
+        <p className="mt-10 text-center text-light-400">
+          Drag and drop to reorder list
+        </p>
       </div>
     </DragDropContext>
   );

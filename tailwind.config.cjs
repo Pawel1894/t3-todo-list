@@ -38,6 +38,9 @@ const config = {
         "dark-mobile-header": "url(/images/bg-mobile-dark.jpg)",
         "dark-desktop-header": "url(/images/bg-desktop-dark.jpg)",
       },
+      backgroundColor: {
+        transparent: "transparent",
+      },
     },
   },
   plugins: [],

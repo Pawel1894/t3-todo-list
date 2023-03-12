@@ -15,10 +15,12 @@ export default function TaskSummary({ refetchTasks, count }: Props) {
     },
   });
   return (
-    <div className="flex items-center justify-between rounded-b-md bg-white px-5 py-4 shadow-lg">
-      <span className="text-sm text-light-400">{count} items left</span>
+    <div className="flex items-center justify-between rounded-b-md bg-white px-5 py-4 shadow-lg dark:bg-dark-200">
+      <span className="text-sm text-light-400 md:text-base">
+        {count} items left
+      </span>
       <button
-        className="text-sm text-light-400"
+        className="text-sm text-light-400 md:text-base"
         onClick={() => deleteCompleted.mutate()}
       >
         Clear Completed

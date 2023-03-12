@@ -46,22 +46,27 @@ export default function Task({ task, refetchTasks }: Props) {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          className="!left-auto !top-auto flex items-center gap-x-3 border-b border-light-200 px-5 py-4"
+          className="!left-auto !top-auto flex items-center gap-x-3 border-b border-light-200 px-5 py-4 dark:border-dark-700"
           onClick={toggleCompleted}
         >
           <button
             className={`relative flex h-5 w-5 items-center justify-center rounded-full  ${
               task.isCompleted
                 ? "bg-gradient-to-b from-primary-200 to-primary-300"
-                : "border border-light-200"
+                : "border border-light-200 dark:border-dark-600"
             }`}
           >
-            <Image
-              src={"/images/icon-check.svg"}
-              width={12}
-              height={6}
-              alt="task is marked as completed"
-            />
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="9">
+              <path
+                className={`fill-none ${
+                  task.isCompleted ? "stroke-white" : "stroke-none"
+                } `}
+                fill="none"
+                stroke="#FFF"
+                stroke-width="2"
+                d="M1 4.304L3.696 7l6-6"
+              />
+            </svg>
           </button>
           <span
             className={`text-sm ${
@@ -71,12 +76,13 @@ export default function Task({ task, refetchTasks }: Props) {
             {task.text}
           </span>
           <button className="ml-auto" onClick={onDeleteHandler}>
-            <Image
-              src={"/images/icon-cross.svg"}
-              alt="delete task"
-              width={12}
-              height={12}
-            />
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18">
+              <path
+                className="fill-light-400 dark:fill-dark-400"
+                fill-rule="evenodd"
+                d="M16.97 0l.708.707L9.546 8.84l8.132 8.132-.707.707-8.132-8.132-8.132 8.132L0 16.97l8.132-8.132L0 .707.707 0 8.84 8.132 16.971 0z"
+              />
+            </svg>
           </button>
         </div>
       )}
