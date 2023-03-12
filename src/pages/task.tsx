@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import {
@@ -181,9 +181,15 @@ export default function Task() {
               />
             </div>
           </div>
-          <p className="mt-10 text-center text-light-400">
-            Drag and drop to reorder list
-          </p>
+          <div className="mt-10 flex items-center justify-between">
+            <p className="text-light-400">Drag and drop to reorder list</p>
+            <button
+              className="text-light-400 underline"
+              onClick={() => void signOut()}
+            >
+              sign out
+            </button>
+          </div>
         </div>
       </DragDropContext>
     </>
