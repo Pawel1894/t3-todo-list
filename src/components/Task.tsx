@@ -1,5 +1,8 @@
 import { type Task } from "@prisma/client";
-import { type QueryObserverResult } from "@tanstack/react-query";
+import {
+  useQueryClient,
+  type QueryObserverResult,
+} from "@tanstack/react-query";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { api } from "~/utils/api";
@@ -8,19 +11,67 @@ type Props = {
   task: Task;
   refetchTasks: () => Promise<QueryObserverResult<Task[]>>;
   index: number;
+  setMutatingLoader: (state: boolean) => void;
+  activeFilter: "All" | "Active" | "Completed";
 };
 
-export default function Task({ task, refetchTasks }: Props) {
+export default function Task({
+  task,
+  refetchTasks,
+  setMutatingLoader,
+  activeFilter,
+}: Props) {
+  const queryClient = useQueryClient();
+
   const markAsCompleted = api.task.updateCompleted.useMutation({
-    onSuccess: async () => {
-      await refetchTasks();
+    onMutate: async (args: { id: string; pos: number; value: boolean }) => {
+      await queryClient.cancelQueries({
+        queryKey: [
+          ["task", "getTasks"],
+          { input: activeFilter, type: "query" },
+        ],
+      });
+
+      // Snapshot the previous value
+      const prevData = queryClient.getQueryData([
+        ["task", "getTasks"],
+        { input: activeFilter, type: "query" },
+      ]);
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(
+        [["task", "getTasks"], { input: activeFilter, type: "query" }],
+        (old: Task[] | undefined) => {
+          if (old) {
+            return old.map((i) => {
+              if (i.id === args.id) {
+                return {
+                  ...i,
+                  isCompleted: args.value,
+                };
+              }
+              return i;
+            });
+          }
+
+          return old;
+        }
+      );
+
+      // Return a context with the previous and new todo
+      return { prevData };
+    },
+    onError: (err, newTodo, context) => {
+      queryClient.setQueryData(["todos"], context?.prevData);
     },
   });
 
   const deleteTask = api.task.delete.useMutation({
+    onMutate: () => setMutatingLoader(true),
     onSuccess: async () => {
       await refetchTasks();
     },
+    onSettled: () => setMutatingLoader(false),
   });
 
   function toggleCompleted() {

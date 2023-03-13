@@ -5,14 +5,18 @@ import { api } from "~/utils/api";
 
 export default function TaskInput({
   refetchTasks,
+  setMutatingLoader,
 }: {
   refetchTasks: () => Promise<QueryObserverResult<Task[]>>;
+  setMutatingLoader: (state: boolean) => void;
 }) {
   const [task, setTask] = useState<string>("");
   const taskMutation = api.task.create.useMutation({
+    onMutate: () => setMutatingLoader(true),
     onSuccess: async () => {
       await refetchTasks();
     },
+    onSettled: () => setMutatingLoader(false),
   });
 
   function createTask() {

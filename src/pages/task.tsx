@@ -23,10 +23,24 @@ export default function Task() {
     FiltersEnum.Enum.All
   );
   const queryClient = useQueryClient();
+  const [mutatingLoader, setMutatingLoader] = useState(false);
 
   const switchPositions = api.task.switchPositions.useMutation({
-    onMutate: ({ destPos, sourceId, sourcePos }) => {
+    onMutate: async ({ destPos, sourceId, sourcePos }) => {
       if (!data) return {};
+
+      await queryClient.cancelQueries({
+        queryKey: [
+          ["task", "getTasks"],
+          { input: activeFilter, type: "query" },
+        ],
+      });
+
+      // Snapshot the previous value
+      const prevData = queryClient.getQueryData([
+        ["task", "getTasks"],
+        { input: activeFilter, type: "query" },
+      ]);
 
       if (sourcePos < destPos) {
         data.forEach((task) => {
@@ -63,12 +77,14 @@ export default function Task() {
       }
 
       queryClient.setQueryData(
-        [["task", "getTasks"], { input: "All", type: "query" }],
+        [["task", "getTasks"], { input: activeFilter, type: "query" }],
         data
       );
+
+      return { prevData };
     },
-    onSettled: async () => {
-      await refetchTasks();
+    onError: (err, newTodo, context) => {
+      queryClient.setQueryData(["todos"], context?.prevData);
     },
   });
 
@@ -93,9 +109,11 @@ export default function Task() {
   const {
     data,
     isLoading,
+    isRefetching,
     refetch: refetchTasks,
   } = api.task.getTasks.useQuery(activeFilter, {
     enabled: sessionData?.user !== undefined,
+    refetchOnWindowFocus: false,
   });
   if (sessionStatus === "loading") {
     return (
@@ -119,7 +137,10 @@ export default function Task() {
       </Head>
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="mx-auto max-w-xl -translate-y-[5.75rem] px-6 sm:px-0">
-          <TaskInput refetchTasks={refetchTasks} />
+          <TaskInput
+            refetchTasks={refetchTasks}
+            setMutatingLoader={setMutatingLoader}
+          />
           <Droppable droppableId={"tasks"}>
             {(provided) => (
               <div
@@ -128,7 +149,7 @@ export default function Task() {
                 id="viewport"
                 className="relative mt-4 h-[45vh] overflow-y-auto overflow-x-hidden rounded-t-md bg-white drop-shadow-lg dark:bg-dark-200 dark:text-white"
               >
-                {isLoading ? (
+                {isLoading || mutatingLoader || isRefetching ? (
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                     <LoadIndicator />
                   </div>
@@ -139,6 +160,8 @@ export default function Task() {
                       key={task.id}
                       task={task}
                       index={index}
+                      setMutatingLoader={setMutatingLoader}
+                      activeFilter={activeFilter}
                     />
                   ))
                 ) : (
@@ -156,6 +179,7 @@ export default function Task() {
                   : "unknown"
               }
               refetchTasks={refetchTasks}
+              setMutatingLoader={setMutatingLoader}
             />
             <div className="left-1/2 mt-4 flex items-center justify-center gap-x-5 rounded-md bg-white py-4 font-bold text-light-400 shadow-md dark:bg-dark-200 md:absolute md:top-1/2 md:m-0 md:-translate-y-1/2 md:-translate-x-1/2 md:bg-transparent md:p-0 md:shadow-none md:dark:bg-transparent">
               <FilterBtn
