@@ -1,24 +1,12 @@
 import { type PrismaClient } from "@prisma/client";
 import { createTRPCRouter, protectedProcedure } from "./../trpc";
 import { z } from "zod";
+import { prisma } from "~/server/db";
 import { FiltersEnum } from "~/types/enums";
 
 export const taskRouter = createTRPCRouter({
   getTasks: protectedProcedure.input(FiltersEnum).query(({ ctx, input }) => {
-    return ctx.prisma.task.findMany({
-      where: {
-        userId: ctx.session.user.id,
-        AND:
-          input === "All"
-            ? {}
-            : {
-                isCompleted: input === "Active" ? false : true,
-              },
-      },
-      orderBy: {
-        position: "asc",
-      },
-    });
+    return getAllData(ctx.session.user.id, input);
   }),
   create: protectedProcedure
     .input(z.string())
@@ -198,6 +186,23 @@ async function decrementPositions(
       position: {
         decrement: 1,
       },
+    },
+  });
+}
+
+export async function getAllData(userId: string, input: FiltersEnum) {
+  return await prisma.task.findMany({
+    where: {
+      userId: userId,
+      AND:
+        input === "All"
+          ? {}
+          : {
+              isCompleted: input === "Active" ? false : true,
+            },
+    },
+    orderBy: {
+      position: "asc",
     },
   });
 }

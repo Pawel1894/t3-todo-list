@@ -1,3 +1,4 @@
+import superjson from "superjson";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
@@ -15,8 +16,13 @@ import { api } from "~/utils/api";
 import TaskDisplay from "~/components/Task";
 import { useQueryClient } from "@tanstack/react-query";
 import Head from "next/head";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { createTRPCContext } from "~/server/api/trpc";
+import { type NextApiRequest, type NextApiResponse } from "next";
+import { appRouter } from "~/server/api/root";
+import { type Task } from "@prisma/client";
 
-export default function Task() {
+export default function Task({ init }: { init: Task[] }) {
   const router = useRouter();
   const { data: sessionData, status: sessionStatus } = useSession();
   const [activeFilter, setActiveFilter] = useState<FiltersEnum>(
@@ -114,6 +120,7 @@ export default function Task() {
   } = api.task.getTasks.useQuery(activeFilter, {
     enabled: sessionData?.user !== undefined,
     refetchOnWindowFocus: false,
+    initialData: init,
   });
   if (sessionStatus === "loading") {
     return (
@@ -219,3 +226,29 @@ export default function Task() {
     </>
   );
 }
+
+export const getServerSideProps = async ({
+  req,
+  res,
+}: {
+  req: NextApiRequest;
+  res: NextApiResponse;
+}) => {
+  // const session = await getServerSession();
+  // session?.user.id;
+  // const data = await getAllData(session?.user.id, "Active")
+  // return { props: { init: data } };
+
+  const ssg = createProxySSGHelpers({
+    router: appRouter,
+    ctx: await createTRPCContext({
+      req: req,
+      res: res,
+    }),
+    transformer: superjson,
+  });
+
+  const response = await ssg.task.getTasks.fetch("All");
+
+  return { props: { init: response } };
+};
