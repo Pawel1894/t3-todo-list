@@ -136,7 +136,7 @@ export default function Task() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="mx-auto max-w-xl -translate-y-[5.75rem] px-6 sm:px-0">
+        <div className="mx-auto max-w-xl -translate-y-[5.75rem] px-6 sm:px-0 md:-translate-y-32">
           <TaskInput
             refetchTasks={refetchTasks}
             setMutatingLoader={setMutatingLoader}

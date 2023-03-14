@@ -96,11 +96,11 @@ export default function Task({
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          className="!left-auto !top-auto flex items-center gap-x-3 border-b border-light-200 px-5 py-4 dark:border-dark-700"
+          className="!left-auto !top-auto flex items-center gap-x-3 border-b border-light-200 px-5 py-4 dark:border-dark-700 md:py-5 md:px-6"
           onClick={toggleCompleted}
         >
           <button
-            className={`relative flex h-5 w-5 items-center justify-center rounded-full  ${
+            className={`relative flex h-5 w-5 items-center justify-center rounded-full md:h-6 md:w-6  ${
               task.isCompleted
                 ? "bg-gradient-to-b from-primary-200 to-primary-300"
                 : "border border-light-200 dark:border-dark-600"
@@ -119,7 +119,7 @@ export default function Task({
             </svg>
           </button>
           <span
-            className={`text-sm ${
+            className={`text-sm md:text-base ${
               task.isCompleted ? "text-light-300 line-through" : ""
             }`}
           >

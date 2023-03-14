@@ -31,7 +31,7 @@ export default function TaskInput({
         value={task}
         onChange={(e) => setTask(e.target.value)}
         type="text"
-        className="w-full rounded-l-md py-[0.875rem] px-5 outline-none dark:bg-dark-200 dark:text-white"
+        className="w-full rounded-l-md py-[0.875rem] px-5 outline-none dark:bg-dark-200 dark:text-white md:py-5 md:text-lg"
         placeholder="Create a new todo..."
       />
       <button

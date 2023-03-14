@@ -22,7 +22,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <header
         className={`${josefin.variable} h-[12.5rem] bg-mobile-header bg-cover bg-no-repeat px-[1.625rem]  font-sans dark:bg-dark-mobile-header sm:h-[18.75rem] sm:bg-desktop-header sm:dark:bg-dark-desktop-header`}
       >
-        <div className="mx-auto flex max-w-xl items-center justify-between pt-12">
+        <div className="mx-auto flex max-w-xl items-center justify-between pt-12 md:pt-20">
           <h1 className="pt-1 text-3xl font-bold leading-[0px] tracking-[0.2em] text-white sm:mt-[0.1875rem] sm:text-4xl sm:leading-[0]">
             TODO
           </h1>
